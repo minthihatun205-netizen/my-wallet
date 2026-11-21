@@ -76,6 +76,19 @@
       gap: 10px;
     }
 
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #312e81, #4f46e5);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 14px -4px rgba(79, 70, 229, 0.45);
+    }
+
     .brand {
       display: flex;
       align-items: center;
@@ -774,6 +787,13 @@
 <div class="app-container">
   <div class="header">
     <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+        </svg>
+      </div>
       <h1>My Wallet</h1>
       <span class="date-pill" id="today-date"></span>
     </div>
