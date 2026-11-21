@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e1b4b" />
+  <title>My Wallet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --income: #10b981;
+      --income-bg: #ecfdf5;
+      --expense: #ef4444;
+      --expense-hover: #dc2626;
+      --expense-bg: #fef2f2;
+      --warning: #f59e0b;
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    body.dark {
+      --bg-main: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --text-dark: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+      --income-bg: rgba(16, 185, 129, 0.12);
+      --expense-bg: rgba(239, 68, 68, 0.15);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      line-height: 1.5;
+      padding: 20px 14px 56px;
+      display: flex;
+      justify-content: center;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 560px;
+      min-width: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .date-pill {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface);
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      background: var(--surface);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      min-height: 38px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-2);
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4f46e5 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, 0.45);
+      margin-bottom: 18px;
+    }
+
+    .hero-label {
+      font-size: 13px;
+      color: #c7d2fe;
+      font-weight: 500;
+    }
+
+    .hero-balance {
+      font-size: clamp(26px, 7vw, 34px);
+      font-weight: 700;
+      margin: 6px 0 18px;
+      letter-spacing: -0.5px;
+      word-break: break-word;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      min-width: 0;
+    }
+
+    .stat-title {
+      font-size: 12px;
+      color: #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .dot.inc { background-color: #34d399; }
+    .dot.exp { background-color: #f87171; }
+
+    .stat-value {
+      font-size: clamp(13px, 3.8vw, 16px);
+      font-weight: 700;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .link-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 11px;
+      min-height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .link-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .budget-editor {
+      display: none;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0 12px;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .budget-editor.active {
+      display: flex;
+    }
+
+    .budget-editor input {
+      padding: 9px 12px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .btn-save {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 9px 14px;
+      min-height: 38px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-save:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      min-height: 38px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-cancel:hover {
+      color: var(--text-dark);
+    }
+
+    .budget-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .progress-fill.warn { background: var(--warning); }
+    .progress-fill.over { background: var(--expense); }
+
+    .type-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      padding: 10px;
+      min-height: 42px;
+      border: none;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .type-btn.active.expense {
+      background: var(--surface);
+      color: var(--expense);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .type-btn.active.income {
+      background: var(--surface);
+      color: var(--income);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .submit-btn {
+      width: 100%;
+      min-height: 44px;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      min-height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .tx-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tx-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .cat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--surface-2);
+      flex-shrink: 0;
+    }
+
+    .tx-text {
+      min-width: 0;
+    }
+
+    .tx-title {
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tx-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .tx-amount {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tx-amount.income { color: var(--income); }
+    .tx-amount.expense { color: var(--expense); }
+
+    .del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 15px;
+      min-width: 34px;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .del-btn:hover {
+      color: var(--expense);
+      background: var(--expense-bg);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px dashed var(--border);
+    }
+
+    .footer-tools {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      background: var(--surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      min-height: 38px;
+      border-radius: 9px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .small-btn:hover {
+      color: var(--text-dark);
+      border-color: var(--text-muted);
+    }
+
+    .small-btn.danger:hover {
+      color: var(--expense);
+      border-color: var(--expense);
+      background: var(--expense-bg);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 380px;
+      padding: 24px;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.35);
+      transform: scale(0.94);
+      transition: transform 0.2s ease;
+      text-align: center;
+    }
+
+    .modal-backdrop.open .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--expense-bg);
+      color: var(--expense);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin: 0 auto 14px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-btn {
+      padding: 10px 14px;
+      min-height: 42px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .modal-btn.secondary {
+      background: var(--surface-2);
+      color: var(--text-dark);
+    }
+
+    .modal-btn.secondary:hover {
+      opacity: 0.85;
+    }
+
+    .modal-btn.danger {
+      background: var(--expense);
+      color: #ffffff;
+      border-color: var(--expense);
+    }
+
+    .modal-btn.danger:hover {
+      background: var(--expense-hover);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 10px 16px;
+      max-width: calc(100vw - 32px);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 1100;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    body.dark .toast {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .app-footer {
+      width: 100%;
+      margin-top: 26px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-contact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-contact:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile Screen Adjustments */
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 12px 48px;
+      }
+
+      .hero-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .card {
+        padding: 15px;
+        border-radius: 16px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .budget-editor.active {
+        flex-wrap: wrap;
+      }
+
+      .budget-editor input {
+        flex: 1 1 100%;
+      }
+
+      .budget-editor .btn-save,
+      .budget-editor .btn-cancel {
+        flex: 1;
+      }
+
+      .history-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .footer-tools {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-tools .small-btn.danger {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="brand">
+      <h1>My Wallet</h1>
+      <span class="date-pill" id="today-date"></span>
+    </div>
+    <button type="button" class="icon-btn" id="theme-toggle" title="Theme ပြောင်းရန်">🌙 Dark</button>
+  </div>
+
+  <div class="hero-card">
+    <div class="hero-label">လက်ရှိလက်ကျန်ငွေ (Available Balance)</div>
+    <div class="hero-balance" id="balance-display">0 MMK</div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-title"><span class="dot inc"></span> စုစုပေါင်းဝင်ငွေ</div>
+        <div class="stat-value" id="income-display">0 MMK</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-title"><span class="dot exp"></span> စုစုပေါင်းသုံးငွေ</div>
+        <div class="stat-value" id="expense-display">0 MMK</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 16px 18px;">
+    <div class="card-header-flex" style="margin-bottom: 6px;">
+      <span class="card-title" style="font-size: 14px; margin-bottom: 0;">ထွက်ငွေ သုံးစွဲမှုကန့်သတ်ချက် (Budget Limit)</span>
+      <button type="button" class="link-btn" id="set-budget-btn">ကန့်သတ်ချက် ပြင်ရန်</button>
+    </div>
+
+    <div class="budget-editor" id="budget-editor">
+      <input type="number" id="budget-input" min="1" placeholder="ကန့်သတ်ချက် (MMK)" />
+      <button type="button" class="btn-save" id="budget-save-btn">သိမ်းမည်</button>
+      <button type="button" class="btn-cancel" id="budget-cancel-btn">မလုပ်တော့ပါ</button>
+    </div>
+
+    <div class="budget-meta">
+      <span id="budget-text">သုံးပြီး: 0 MMK / Limit: 150,000 MMK</span>
+      <span id="budget-percent">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="budget-bar"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">စာရင်းထည့်ရန်</div>
+
+    <div class="type-toggle">
+      <button type="button" class="type-btn active expense" data-type="expense">ထွက်ငွေ</button>
+      <button type="button" class="type-btn income" data-type="income">ဝင်ငွေ</button>
+    </div>
+
+    <form id="tx-form">
+      <div class="form-row">
+        <input type="text" id="tx-title" placeholder="အကြောင်းအရာ (ဥပမာ - ကားခ)" required />
+        <select id="tx-category">
+          <option value="food">🍜 စားသောက်စရိတ်</option>
+          <option value="transport">🚌 ခရီးစရိတ်</option>
+          <option value="study">📚 ကျောင်းသုံး</option>
+          <option value="allowance">💵 မုန့်ဖိုး/ဝင်ငွေ</option>
+          <option value="other">📦 အခြားအသုံးစရိတ်</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <input type="number" id="tx-amount" placeholder="ငွေပမာဏ (MMK)" min="1" required />
+      </div>
+      <button type="submit" class="submit-btn">မှတ်တမ်းတင်မည်</button>
+    </form>
+  </div>
+
+  <div class="toolbar">
+    <div class="history-header">
+      <div class="card-title" style="margin: 0;">အသုံးစရိတ်မှတ်တမ်း</div>
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">အားလုံး</button>
+        <button class="filter-btn" data-filter="income">ဝင်ငွေ</button>
+        <button class="filter-btn" data-filter="expense">ထွက်ငွေ</button>
+      </div>
+    </div>
+    <input type="search" id="search-input" placeholder="🔍 မှတ်တမ်းထဲမှ ရှာဖွေရန်..." />
+  </div>
+
+  <ul class="tx-list" id="tx-list"></ul>
+
+  <div class="footer-tools">
+    <button type="button" class="small-btn" id="export-btn">⬇ Backup သိမ်းမည်။</button>
+    <button type="button" class="small-btn" id="import-trigger">⬆ Backup ပြန်သွင်းမည်။</button>
+    <input type="file" id="import-file" accept=".json" hidden />
+    <button type="button" class="small-btn danger" id="clear-all-btn">🗑 အားလုံးဖျက်မည်။</button>
+  </div>
+
+  <footer class="app-footer">
+    <div>© <span id="copyright-year"></span> Min Thiha Tun. All rights reserved.</div>
+    <div>
+      Telegram:
+      <a
+        href="https://t.me/Tenebris_Vane"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-contact"
+      >
+        ✈ @Tenebris_Vane
+      </a>
+    </div>
+  </footer>
+</div>
+
+<div class="modal-backdrop" id="confirm-modal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <div class="modal-icon">🗑</div>
+    <div class="modal-title">မှတ်တမ်းအားလုံးကို ဖျက်မှာလား?</div>
+    <div class="modal-desc">သိမ်းဆည်းထားသော ဝင်ငွေ/ထွက်ငွေ စာရင်းအားလုံး အပြီးတိုင် ပျက်သွားပါလိမ့်မည်။</div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn secondary" id="modal-cancel-btn">မလုပ်တော့ပါ</button>
+      <button type="button" class="modal-btn danger" id="modal-confirm-btn">ဖျက်မည်</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  class Transaction {
+    constructor(title, amount, category, date = null) {
+      this.id = Date.now() + Math.floor(Math.random() * 10000);
+      this.title = title;
+      this.amount = Number(amount);
+      this.category = category;
+      this.date = date || new Date().toLocaleDateString('en-GB', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      });
+    }
+
+    static formatMMK(value) {
+      return `${Math.abs(value).toLocaleString('en-US')} MMK`;
+    }
+
+    static getCategoryInfo(cat) {
+      const map = {
+        food: { icon: '🍜', label: 'စားသောက်စရိတ်' },
+        transport: { icon: '🚌', label: 'ခရီးစရိတ်' },
+        study: { icon: '📚', label: 'ကျောင်းသုံး' },
+        allowance: { icon: '💵', label: 'မုန့်ဖိုး/ဝင်ငွေ' },
+        other: { icon: '📦', label: 'အခြားအသုံးစရိတ်' }
+      };
+      return map[cat] || map.other;
+    }
+
+    getType() { return 'base'; }
+  }
+
+  class Income extends Transaction {
+    getType() { return 'income'; }
+  }
+
+  class Expense extends Transaction {
+    getType() { return 'expense'; }
+  }
+
+  class UIFeedback {
+    static toastTimer = null;
+
+    static showToast(message) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = message;
+      toastEl.classList.add('show');
+      clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 2400);
+    }
+  }
+
+  class StudentWalletApp {
+    constructor() {
+      this.storageKey = 'student_wallet_pro_v1';
+      this.budgetKey = 'student_wallet_budget_v1';
+
+      this.transactions = this.load();
+      this.budgetLimit = Number(localStorage.getItem(this.budgetKey)) || 150000;
+      this.currentFilter = 'all';
+      this.searchQuery = '';
+    }
+
+    add(title, amount, category, type) {
+      const tx = type === 'income'
+        ? new Income(title, amount, category)
+        : new Expense(title, amount, category);
+      this.transactions.unshift(tx);
+      this.save();
+      this.render();
+      UIFeedback.showToast('စာရင်းမှတ်တမ်းတင်ပြီးပါပြီ။');
+    }
+
+    remove(id) {
+      this.transactions = this.transactions.filter(t => t.id !== id);
+      this.save();
+      this.render();
+      UIFeedback.showToast('မှတ်တမ်းတစ်ခု ဖျက်လိုက်ပါပြီ။');
+    }
+
+    executeClearAll() {
+      this.transactions = [];
+      this.save();
+      this.render();
+      UIFeedback.showToast('မှတ်တမ်းအားလုံးကို ရှင်းလင်းပြီးပါပြီ။');
+    }
+
+    setFilter(filter) {
+      this.currentFilter = filter;
+      this.render();
+    }
+
+    setSearch(query) {
+      this.searchQuery = query.trim().toLowerCase();
+      this.render();
+    }
+
+    setBudget(newLimit) {
+      const num = Number(newLimit);
+      if (!num || isNaN(num) || num <= 0) return false;
+      this.budgetLimit = num;
+      localStorage.setItem(this.budgetKey, String(this.budgetLimit));
+      this.render();
+      UIFeedback.showToast('ကန့်သတ်ချက် ပြင်ဆင်ပြီးပါပြီ။');
+      return true;
+    }
+
+    getTotals() {
+      let income = 0;
+      let expense = 0;
+      for (const t of this.transactions) {
+        if (t instanceof Income) income += t.amount;
+        if (t instanceof Expense) expense += t.amount;
+      }
+      return { income, expense, balance: income - expense };
+    }
+
+    save() {
+      const serialized = this.transactions.map(t => ({
+        title: t.title,
+        amount: t.amount,
+        category: t.category,
+        date: t.date,
+        type: t.getType()
+      }));
+      localStorage.setItem(this.storageKey, JSON.stringify(serialized));
+    }
+
+    load() {
+      const raw = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+      return raw.map(item =>
+        item.type === 'income'
+          ? new Income(item.title, item.amount, item.category, item.date)
+          : new Expense(item.title, item.amount, item.category, item.date)
+      );
+    }
+
+    exportJSON() {
+      const dataStr = JSON.stringify({
+        exportedAt: new Date().toISOString(),
+        budgetLimit: this.budgetLimit,
+        transactions: this.transactions.map(t => ({
+          title: t.title,
+          amount: t.amount,
+          category: t.category,
+          date: t.date,
+          type: t.getType()
+        }))
+      }, null, 2);
+
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `student-wallet-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      UIFeedback.showToast('Backup ဖိုင်သိမ်းပြီးပါပြီ။');
+    }
+
+    importJSON(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const list = Array.isArray(parsed) ? parsed : parsed.transactions;
+          if (!Array.isArray(list)) throw new Error('Invalid format');
+
+          this.transactions = list.map(item =>
+            item.type === 'income'
+              ? new Income(item.title, item.amount, item.category, item.date)
+              : new Expense(item.title, item.amount, item.category, item.date)
+          );
+          if (parsed.budgetLimit) {
+            this.budgetLimit = Number(parsed.budgetLimit);
+            localStorage.setItem(this.budgetKey, String(this.budgetLimit));
+          }
+          this.save();
+          this.render();
+          UIFeedback.showToast('Backup ပြန်သွင်းပြီးပါပြီ။');
+        } catch {
+          UIFeedback.showToast('ဖိုင်ပုံစံ မမှန်ကန်ပါ!');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    renderBudget(expense) {
+      const pct = Math.min(100, Math.round((expense / this.budgetLimit) * 100));
+      const bar = document.getElementById('budget-bar');
+
+      document.getElementById('budget-text').textContent =
+        `သုံးပြီး: ${Transaction.formatMMK(expense)} / Limit: ${Transaction.formatMMK(this.budgetLimit)}`;
+      document.getElementById('budget-percent').textContent = `${pct}%`;
+
+      bar.style.width = `${pct}%`;
+      bar.classList.remove('warn', 'over');
+      if (pct >= 100) bar.classList.add('over');
+      else if (pct >= 75) bar.classList.add('warn');
+    }
+
+    render() {
+      const { income, expense, balance } = this.getTotals();
+
+      document.getElementById('balance-display').textContent =
+        (balance < 0 ? '-' : '') + Transaction.formatMMK(balance);
+      document.getElementById('income-display').textContent =
+        '+' + Transaction.formatMMK(income);
+      document.getElementById('expense-display').textContent =
+        '-' + Transaction.formatMMK(expense);
+
+      this.renderBudget(expense);
+
+      const listEl = document.getElementById('tx-list');
+      listEl.innerHTML = '';
+
+      const filtered = this.transactions.filter(t => {
+        const matchType = this.currentFilter === 'all' || t.getType() === this.currentFilter;
+        const catLabel = Transaction.getCategoryInfo(t.category).label.toLowerCase();
+        const matchQuery = !this.searchQuery ||
+          t.title.toLowerCase().includes(this.searchQuery) ||
+          catLabel.includes(this.searchQuery);
+        return matchType && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">မှတ်တမ်းမရှိသေးပါ။</div>`;
+        return;
+      }
+
+      filtered.forEach(t => {
+        const isInc = t instanceof Income;
+        const catInfo = Transaction.getCategoryInfo(t.category);
+        const li = document.createElement('li');
+        li.className = 'tx-item';
+        li.innerHTML = `
+          <div class="tx-left">
+            <div class="cat-icon">${catInfo.icon}</div>
+            <div class="tx-text">
+              <div class="tx-title">${t.title}</div>
+              <div class="tx-meta">${catInfo.label} • ${t.date}</div>
+            </div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount ${t.getType()}">
+              ${isInc ? '+' : '-'}${Transaction.formatMMK(t.amount)}
+            </div>
+            <button class="del-btn" title="ဖျက်ရန်" onclick="walletApp.remove(${t.id})">✕</button>
+          </div>
+        `;
+        listEl.appendChild(li);
+      });
+    }
+  }
+
+  const themeBtn = document.getElementById('theme-toggle');
+  function applyTheme(isDark) {
+    document.body.classList.toggle('dark', isDark);
+    themeBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('student_wallet_theme_v1', isDark ? 'dark' : 'light');
+  }
+
+  applyTheme(localStorage.getItem('student_wallet_theme_v1') === 'dark');
+  themeBtn.addEventListener('click', () => {
+    applyTheme(!document.body.classList.contains('dark'));
+  });
+
+  const walletApp = new StudentWalletApp();
+  let selectedType = 'expense';
+
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-GB', {
+    weekday: 'short', day: '2-digit', month: 'short'
+  });
+
+  const budgetEditor = document.getElementById('budget-editor');
+  const budgetInput = document.getElementById('budget-input');
+
+  function closeBudgetEditor() {
+    budgetEditor.classList.remove('active');
+    budgetInput.value = '';
+  }
+
+  document.getElementById('set-budget-btn').addEventListener('click', () => {
+    if (budgetEditor.classList.contains('active')) {
+      closeBudgetEditor();
+    } else {
+      budgetEditor.classList.add('active');
+      budgetInput.value = walletApp.budgetLimit;
+      budgetInput.focus();
+      budgetInput.select();
+    }
+  });
+
+  function saveBudgetFromInput() {
+    if (walletApp.setBudget(budgetInput.value)) {
+      closeBudgetEditor();
+    } else {
+      budgetInput.focus();
+    }
+  }
+
+  document.getElementById('budget-save-btn').addEventListener('click', saveBudgetFromInput);
+  document.getElementById('budget-cancel-btn').addEventListener('click', closeBudgetEditor);
+  budgetInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveBudgetFromInput();
+    } else if (e.key === 'Escape') {
+      closeBudgetEditor();
+    }
+  });
+
+  const confirmModal = document.getElementById('confirm-modal');
+
+  function openConfirmModal() {
+    if (!walletApp.transactions.length) {
+      UIFeedback.showToast('ဖျက်ရန် မှတ်တမ်းမရှိသေးပါ။');
+      return;
+    }
+    confirmModal.classList.add('open');
+    confirmModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeConfirmModal() {
+    confirmModal.classList.remove('open');
+    confirmModal.setAttribute('aria-hidden', 'true');
+  }
+
+  document.getElementById('clear-all-btn').addEventListener('click', openConfirmModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeConfirmModal);
+  document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+    walletApp.executeClearAll();
+    closeConfirmModal();
+  });
+
+  confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) closeConfirmModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && confirmModal.classList.contains('open')) {
+      closeConfirmModal();
+    }
+  });
+
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedType = btn.dataset.type;
+      document.getElementById('tx-category').value =
+        selectedType === 'income' ? 'allowance' : 'food';
+    });
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      walletApp.setFilter(btn.dataset.filter);
+    });
+  });
+
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    walletApp.setSearch(e.target.value);
+  });
+
+  document.getElementById('tx-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const titleInput = document.getElementById('tx-title');
+    const amountInput = document.getElementById('tx-amount');
+    const categoryInput = document.getElementById('tx-category');
+
+    const title = titleInput.value.trim();
+    const amount = Number(amountInput.value);
+    if (!title || amount <= 0) return;
+
+    walletApp.add(title, amount, categoryInput.value, selectedType);
+    titleInput.value = '';
+    amountInput.value = '';
+    titleInput.focus();
+  });
+
+  document.getElementById('export-btn').addEventListener('click', () => walletApp.exportJSON());
+  document.getElementById('import-trigger').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+  });
+  document.getElementById('import-file').addEventListener('change', (e) => {
+    if (e.target.files[0]) walletApp.importJSON(e.target.files[0]);
+    e.target.value = '';
+  });
+
+  walletApp.render();
+
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
