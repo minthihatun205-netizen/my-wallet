@@ -803,6 +803,8 @@
       <span class="date-pill" id="today-date"></span>
     </div>
     <button type="button" class="icon-btn" id="theme-toggle" title="Theme ပြောင်းရန်">🌙 Dark</button>
+    <button id="installBtn" type="button" class="icon-btn" style="display: none;">📲 Install</button>
+</button>
   </div>
 
   <div class="hero-card">
@@ -1319,6 +1321,36 @@
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
+
+  let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (installBtn) {
+    installBtn.style.display = 'inline-block';
+  }
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (outcome === 'accepted') {
+      installBtn.style.display = 'none';
+    }
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  if (installBtn) {
+    installBtn.style.display = 'none';
+  }
+});
 </script>
 
 </body>
